@@ -3,6 +3,8 @@ package com.intuit.first_project.service;
 import com.intuit.first_project.dto.StudentDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 public interface StudentService {
 
@@ -13,4 +15,7 @@ public interface StudentService {
     StudentDTO updateStudent(long id, StudentDTO studentDTO);
 
     void deleteStudent(long id);
+
+
+    List<StudentDTO> getAllStudnets();
 }

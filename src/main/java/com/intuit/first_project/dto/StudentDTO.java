@@ -12,6 +12,10 @@ public class StudentDTO {
 
     @NotBlank(message = "First name cannot be blank")
     @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
+    @Pattern(
+            regexp = "^[a-zA-Z]+([ '-][a-zA-Z]+)*$",
+            message = "First name must contain only letters, spaces, hyphens, or apostrophes"
+    )
     private String firstName;
 
     @NotBlank(message = "Last name cannot be blank")

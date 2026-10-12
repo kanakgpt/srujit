@@ -9,6 +9,8 @@ import com.intuit.first_project.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -71,6 +73,20 @@ public class StudenetServiceImpl implements StudentService {
             throw new StudentNotFoundException("Student not found with id: " + id);
         }
         studentRepo.deleteById(id);
+    }
+
+    @Override
+    public List<StudentDTO> getAllStudnets() {
+        System.out.println("in service getAllStudnets");
+      List<Student> students=  studentRepo.findAll();
+      List<StudentDTO> list=new ArrayList<>();
+      for(Student student:students){
+          list.add(StudentMapper.toDTO(student));
+      }
+      System.out.println("database query executed");
+      return  list;
+      //  return students.stream().map(StudentMapper::toDTO).toList();
+
     }
 
 }

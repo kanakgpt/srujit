@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/students")
 public class StudentController {
@@ -60,4 +62,19 @@ public class StudentController {
         );
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<StudentDTO>>> getStudents(){
+
+        System.out.println("Inside getStudents");
+        List<StudentDTO> students = studentService.getAllStudnets();
+        ApiResponse<List<StudentDTO>> response = new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "Students retrieved successfully",
+                students
+        );
+        System.out.println("Exit from getStudents");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
 }
