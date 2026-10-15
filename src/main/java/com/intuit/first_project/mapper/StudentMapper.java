@@ -12,6 +12,16 @@ public class StudentMapper {
         student.setEmail(studentDTO.getEmail());
         student.setAddress(studentDTO.getAddress());
         student.setAge(studentDTO.getAge());
+        if(studentDTO.getCourses() != null&&!studentDTO.getCourses().isEmpty()) {
+            student.setCourses(studentDTO.getCourses().stream()
+                    .map(courseDTO -> {
+                        var course = new com.intuit.first_project.entity.Course();
+                        course.setCourseId(courseDTO.getCourseId());
+                        course.setCourseName(courseDTO.getCourseName());
+                        return course;
+                    })
+                    .collect(java.util.stream.Collectors.toSet()));
+        }
         return student;
     }
 

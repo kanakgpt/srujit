@@ -4,6 +4,8 @@ import com.intuit.first_project.dto.StudentDTO;
 import com.intuit.first_project.response.ApiResponse;
 import com.intuit.first_project.service.StudentService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +19,11 @@ public class StudentController {
     @Autowired
     StudentService studentService;
 
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
+
     @PostMapping("/save")
     public ResponseEntity<ApiResponse<StudentDTO>> saveStudent(@Valid @RequestBody StudentDTO studentDto){
+        logger.info("Inside saveStudent");
         StudentDTO savedStudent = studentService.saveStudent(studentDto);
         ApiResponse<StudentDTO> response = new ApiResponse<>(
                 HttpStatus.CREATED.value(),

@@ -5,6 +5,8 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.Set;
+
 @Data
 public class StudentDTO {
 
@@ -36,5 +38,7 @@ public class StudentDTO {
     private Integer age;
 
     private Date dob;
+
+    private Set<CourseDTO> courses;
 
 }

@@ -6,6 +6,8 @@ import com.intuit.first_project.exception.StudentNotFoundException;
 import com.intuit.first_project.mapper.StudentMapper;
 import com.intuit.first_project.repo.StudentRepo;
 import com.intuit.first_project.service.StudentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,22 +17,28 @@ import java.util.Optional;
 
 @Service
 public class StudenetServiceImpl implements StudentService {
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
     private StudentRepo studentRepo;
 
     @Override
     public StudentDTO saveStudent(StudentDTO studentDTO) {
+        logger.info("Inside saveStudent");
        Student student= StudentMapper.toEntity(studentDTO);
+       logger.info("Student entity created from DTO");
         return StudentMapper.toDTO(studentRepo.save(student));
     }
 
     @Override
     public StudentDTO getStudentById(long id) {
+      logger.info("Inside getStudentById");
       Optional<Student> student=  studentRepo.findById(id);
       if(!student.isPresent()){
+          logger.error("Student not found with id: " + id);
           throw new StudentNotFoundException("Student not found with id: " + id);
       }
       StudentDTO studentDTO=StudentMapper.toDTO(student.get());
+      logger.info("Student found with id: " + id);
       return studentDTO;
      }
 
@@ -38,8 +46,10 @@ public class StudenetServiceImpl implements StudentService {
     public StudentDTO updateStudent(long id, StudentDTO studentDTO) {
         Optional<Student> existingStudent = studentRepo.findById(id);
         if (!existingStudent.isPresent()) {
+            logger.error("Student not found with id: " + id);
             throw new StudentNotFoundException("Student not found with id: " + id);
         }
+        logger.info("Student found with id: " + id);
 
         Student student = existingStudent.get();
 
