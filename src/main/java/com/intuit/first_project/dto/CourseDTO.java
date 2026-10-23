@@ -9,4 +9,5 @@ public class CourseDTO {
     private String courseId;
 
     private String courseName;
+    
 }
