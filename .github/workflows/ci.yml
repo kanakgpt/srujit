@@ -41,6 +41,8 @@ jobs:
           java-version: '17'
           cache: maven
 
+      - name: Fix Maven wrapper permissions
+        run: chmod +x mvnw
+
       - name: Run tests
         run: ./mvnw test
-
