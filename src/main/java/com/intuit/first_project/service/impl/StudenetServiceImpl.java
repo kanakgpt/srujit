@@ -19,7 +19,7 @@ import java.util.Optional;
 public class StudenetServiceImpl implements StudentService {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
-    private StudentRepo studentRepo;
+    public StudentRepo studentRepo;
 
     @Override
     public StudentDTO saveStudent(StudentDTO studentDTO) {
