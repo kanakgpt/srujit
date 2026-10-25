@@ -1,0 +1,74 @@
+name: Deploy E1
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      SPRING_PROFILES_ACTIVE: e1
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 26
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '26'
+          cache: maven
+
+      - name: Grant permission to Maven wrapper
+        run: chmod +x ./mvnw
+
+      - name: Run tests for E1
+        run: ./mvnw test
+
+      - name: Build JAR
+        run: ./mvnw clean package -DskipTests
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    environment: e1
+    env:
+      SPRING_PROFILES_ACTIVE: e1
+      E1_SERVER_HOST: ${{ secrets.E1_SERVER_HOST }}
+      E1_SERVER_USER: ${{ secrets.E1_SERVER_USER }}
+      E1_SSH_PRIVATE_KEY: ${{ secrets.E1_SSH_PRIVATE_KEY }}
+      E1_APP_DIR: ${{ secrets.E1_APP_DIR }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 26
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '26'
+          cache: maven
+
+      - name: Build JAR for deployment
+        run: ./mvnw clean package -DskipTests
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "$E1_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$E1_SERVER_HOST" >> ~/.ssh/known_hosts
+
+      - name: Copy JAR to server
+        run: |
+          scp target/*.jar "$E1_SERVER_USER@$E1_SERVER_HOST:$E1_APP_DIR/"
+
+      - name: Restart app on server
+        run: |
+          ssh "$E1_SERVER_USER@$E1_SERVER_HOST" "cd $E1_APP_DIR && nohup java -jar *.jar --spring.profiles.active=e1 > app.log 2>&1 &"
+
